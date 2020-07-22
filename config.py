@@ -1,0 +1,1 @@
+TG_TOKEN = "Your TOKEN"
