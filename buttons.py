@@ -5,7 +5,7 @@ button_newTask = "New Task 🗒️"
 button_deleteTask = "Delete Task ❌"
 button_editTask = "Edit Task ✎"
 button_viewAllTasks = "View All Tasks 🔎"
-button_markTaskCompleted = "Mark task completed ✔️"
+button_markTaskCompleted = "Mark task completed ✅"
 
 def getBaseKeyboard():
     keyboard=[

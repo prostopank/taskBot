@@ -13,7 +13,13 @@ users_ref = ref.child('users')
 
     
 def addTask(user_id, title,body):
-    users_ref.child(user_id).child(title).set(body)
+    for c in '\/:*?"<>|':
+        title = title.replace(c,"")
+        body = body.replace(c,"")   
+    if len(title)>0 and len(body)>0:
+        users_ref.child(user_id).child(str(title)).set(str(body))
+    else:
+        users_ref.child(user_id).child('None').set('None') 
 
 def viewAllTasks(user_id):
     return users_ref.child(user_id).get()

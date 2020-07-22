@@ -181,13 +181,13 @@ def markTaskCompleted_handler(update: Update, context: CallbackContext):
 def finishMark_handler(update: Update, context: CallbackContext):
     context.user_data[Task_Name_Completed] = update.message.text
     if dataBase.getTask(str(getChatId(update=update, context=context)),context.user_data[Task_Name_Completed]):
-        if '✔️' in dataBase.getBodyTask(str(getChatId(update=update,context=context)),context.user_data[Task_Name_Completed]):
+        if '✅' in dataBase.getBodyTask(str(getChatId(update=update,context=context)),context.user_data[Task_Name_Completed]):
             update.message.reply_text(
             text='This task has already been completed!',
             reply_markup=buttons.getBaseKeyboard(),
         )
         else:
-            textBody = (dataBase.getBodyTask(str(getChatId(update=update,context=context)),context.user_data[Task_Name_Completed])+'✔️')
+            textBody = (dataBase.getBodyTask(str(getChatId(update=update,context=context)),context.user_data[Task_Name_Completed])+'✅')
             dataBase.setBodyTask(str(getChatId(update=update,context=context)),context.user_data[Task_Name_Completed], textBody)
             update.message.reply_text(
                 text='Task complet!',
