@@ -18,9 +18,9 @@ import buttons
 from config import TG_TOKEN
 
 TITLE, BODY = range(2)
-Task_Name = range(1)
-Task_Name_Edit, New_Task_Name, New_Task_Body = range(3)
-Task_Name_Completed = range(1)
+TASK_NAME = range(1)
+TASK_NAME_EDIT, NEW_TASK_NAME, NEW_TASK_BODY = range(3)
+TASK_NAME_COMPLETED = range(1)
 
 
 def doStart_handler(update: Update, context: CallbackContext):
@@ -74,7 +74,7 @@ def deleteTask_handler(update: Update, context: CallbackContext):
             text = "Enter the name of the task you want to delete",
             reply_markup = ReplyKeyboardRemove(),
         )
-        return Task_Name
+        return TASK_NAME
     else:
         update.message.reply_text(
             text = "You have no tasks yet",
@@ -82,9 +82,9 @@ def deleteTask_handler(update: Update, context: CallbackContext):
         )
 
 def taskName_handler(update: Update, context: CallbackContext):
-    context.user_data[Task_Name] = update.message.text
-    if dataBase.getTask(str(getChatId(update=update, context=context)),context.user_data[Task_Name]):
-        dataBase.deleteTask(str(getChatId(update=update, context=context)), context.user_data[Task_Name])
+    context.user_data[TASK_NAME] = update.message.text
+    if dataBase.getTask(str(getChatId(update=update, context=context)),context.user_data[TASK_NAME]):
+        dataBase.deleteTask(str(getChatId(update=update, context=context)), context.user_data[TASK_NAME])
         update.message.reply_text(
             text='Task deleted',
             reply_markup=buttons.getBaseKeyboard(),
@@ -105,7 +105,7 @@ def editTask_handler(update: Update, context: CallbackContext):
             text = "Enter the name of the task you want to editing",
             reply_markup = ReplyKeyboardRemove(),
         )
-        return Task_Name_Edit
+        return TASK_NAME_EDIT
     else:
         update.message.reply_text(
             text = "You have no tasks yet",
@@ -113,13 +113,13 @@ def editTask_handler(update: Update, context: CallbackContext):
         )
         
 def newTaskName_handler(update: Update, context: CallbackContext):
-    context.user_data[Task_Name_Edit] = update.message.text
-    if dataBase.getTask(str(getChatId(update=update, context=context)),context.user_data[Task_Name_Edit]):
+    context.user_data[TASK_NAME_EDIT] = update.message.text
+    if dataBase.getTask(str(getChatId(update=update, context=context)),context.user_data[TASK_NAME_EDIT]):
         update.message.reply_text(
             text = "Enter a new task name",
             reply_markup = ReplyKeyboardRemove(),
         )
-        return New_Task_Name
+        return NEW_TASK_NAME
     else:
         update.message.reply_text(
             text='You dont have such a task',
@@ -128,17 +128,17 @@ def newTaskName_handler(update: Update, context: CallbackContext):
         return ConversationHandler.END      
 
 def newTaskBody_handler(update: Update, context: CallbackContext):
-    context.user_data[New_Task_Name] = update.message.text
+    context.user_data[NEW_TASK_NAME] = update.message.text
     update.message.reply_text(
         text = "Enter a new task description",
         reply_markup = ReplyKeyboardRemove(),
     )
-    return New_Task_Body     
+    return NEW_TASK_BODY     
 
 def finish_edit_handler(update: Update, context: CallbackContext):
-    context.user_data[New_Task_Body] = update.message.text
-    dataBase.deleteTask(str(getChatId(update=update,context=context)), context.user_data[Task_Name_Edit])
-    dataBase.addTask(str(getChatId(update=update,context=context)),context.user_data[New_Task_Name],context.user_data[New_Task_Body])
+    context.user_data[NEW_TASK_BODY] = update.message.text
+    dataBase.deleteTask(str(getChatId(update=update,context=context)), context.user_data[TASK_NAME_EDIT])
+    dataBase.addTask(str(getChatId(update=update,context=context)),context.user_data[NEW_TASK_NAME],context.user_data[NEW_TASK_BODY])
     update.message.reply_text(
         text = "Task edited!",
         reply_markup=buttons.getBaseKeyboard(),
@@ -172,23 +172,23 @@ def markTaskCompleted_handler(update: Update, context: CallbackContext):
             text = "Enter the name of the task you want to completed",
             reply_markup = ReplyKeyboardRemove(),
         )
-        return Task_Name
+        return TASK_NAME
     else:
         update.message.reply_text(
             text = "You have no tasks yet",
             reply_markup = buttons.getBaseKeyboard(),
         )      
 def finishMark_handler(update: Update, context: CallbackContext):
-    context.user_data[Task_Name_Completed] = update.message.text
-    if dataBase.getTask(str(getChatId(update=update, context=context)),context.user_data[Task_Name_Completed]):
-        if '✅' in dataBase.getBodyTask(str(getChatId(update=update,context=context)),context.user_data[Task_Name_Completed]):
+    context.user_data[TASK_NAME_COMPLETED] = update.message.text
+    if dataBase.getTask(str(getChatId(update=update, context=context)),context.user_data[TASK_NAME_COMPLETED]):
+        if '✅' in dataBase.getBodyTask(str(getChatId(update=update,context=context)),context.user_data[TASK_NAME_COMPLETED]):
             update.message.reply_text(
             text='This task has already been completed!',
             reply_markup=buttons.getBaseKeyboard(),
         )
         else:
-            textBody = (dataBase.getBodyTask(str(getChatId(update=update,context=context)),context.user_data[Task_Name_Completed])+'✅')
-            dataBase.setBodyTask(str(getChatId(update=update,context=context)),context.user_data[Task_Name_Completed], textBody)
+            textBody = (dataBase.getBodyTask(str(getChatId(update=update,context=context)),context.user_data[TASK_NAME_COMPLETED])+'✅')
+            dataBase.setBodyTask(str(getChatId(update=update,context=context)),context.user_data[TASK_NAME_COMPLETED], textBody)
             update.message.reply_text(
                 text='Task complet!',
                 reply_markup=buttons.getBaseKeyboard(),
@@ -239,19 +239,19 @@ def main():
 
     deleteTask = ConversationHandler(
         entry_points=[MessageHandler(filters=Filters.text(buttons.button_deleteTask), callback=deleteTask_handler)],
-        states={Task_Name: [MessageHandler(Filters.text, taskName_handler, pass_user_data=True),],},
+        states={TASK_NAME: [MessageHandler(Filters.text, taskName_handler, pass_user_data=True),],},
         fallbacks=[CommandHandler('cancel', cancel_handler),],
     )
 
     editTask = ConversationHandler(
         entry_points=[MessageHandler(filters=Filters.text(buttons.button_editTask), callback=editTask_handler)],
-        states={Task_Name_Edit: [MessageHandler(Filters.text, newTaskName_handler, pass_user_data=True),],New_Task_Name: [MessageHandler(Filters.text, newTaskBody_handler, pass_user_data=True),],New_Task_Body:[MessageHandler(Filters.text, finish_edit_handler, pass_user_data=True)]},
+        states={TASK_NAME_EDIT: [MessageHandler(Filters.text, newTaskName_handler, pass_user_data=True),],NEW_TASK_NAME: [MessageHandler(Filters.text, newTaskBody_handler, pass_user_data=True),],NEW_TASK_BODY:[MessageHandler(Filters.text, finish_edit_handler, pass_user_data=True)]},
         fallbacks=[CommandHandler('cancel', cancel_handler),],
     )
 
     markTask = ConversationHandler(
         entry_points=[MessageHandler(filters=Filters.text(buttons.button_markTaskCompleted), callback=markTaskCompleted_handler)],
-        states={Task_Name_Completed: [MessageHandler(Filters.text, finishMark_handler, pass_user_data=True),],},
+        states={TASK_NAME_COMPLETED: [MessageHandler(Filters.text, finishMark_handler, pass_user_data=True),],},
         fallbacks=[CommandHandler('cancel', cancel_handler),],
     )
     
